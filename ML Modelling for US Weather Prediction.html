@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<!-- saved from url=(0085)https://0c0bf300e3394802b4da9acbd8eec675.app.posit.cloud/p/55db75bf/RMD_USWeather.Rmd -->
+<html class=""><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <script type="application/shiny-singletons"></script>
+  <script type="application/html-dependencies">jquery[3.6.0];shiny-css[1.8.1.1];shiny-javascript[1.8.1.1]</script>
+<script src="./ML Modelling for US Weather Prediction_files/jquery.min.js.download"></script>
+<link href="./ML Modelling for US Weather Prediction_files/shiny.min.css" rel="stylesheet">
+<script src="./ML Modelling for US Weather Prediction_files/shiny.min.js.download"></script>  <script src="./ML Modelling for US Weather Prediction_files/rmd_loader.js.download"></script>
+  <link href="./ML Modelling for US Weather Prediction_files/rmd_loader.css" rel="stylesheet">
+<script src="./ML Modelling for US Weather Prediction_files/header-attrs.js.download"></script><meta name="viewport" content="width=device-width, initial-scale=1"><link href="./ML Modelling for US Weather Prediction_files/bootstrap.min.css" rel="stylesheet" type="text/css"><script src="./ML Modelling for US Weather Prediction_files/bootstrap.min.js.download"></script><script src="./ML Modelling for US Weather Prediction_files/html5shiv.min.js.download"></script><script src="./ML Modelling for US Weather Prediction_files/respond.min.js.download"></script><style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style><script src="./ML Modelling for US Weather Prediction_files/tabsets.js.download"></script><link href="./ML Modelling for US Weather Prediction_files/default.css" rel="stylesheet" type="text/css"><script src="./ML Modelling for US Weather Prediction_files/highlight.js.download"></script><link href="./ML Modelling for US Weather Prediction_files/rmd_perf.css" rel="stylesheet" type="text/css"><script src="./ML Modelling for US Weather Prediction_files/rmd_perf.js.download"></script><script src="./ML Modelling for US Weather Prediction_files/rsiframe.js.download"></script>
+
+
+<meta name="generator" content="pandoc">
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+
+
+<meta name="author" content="Kendrick Moreno">
+
+<meta name="date" content="2024-06-26">
+
+<title>ML Modelling for US Weather Prediction</title>
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+<script type="text/javascript" src="./ML Modelling for US Weather Prediction_files/MathJax.js.download"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover, .MJXp-munder {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > *, .MJXp-munder > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+<body><div id="MathJax_Message" style="display: none;"></div>
+  <div>
+    <div class="shiny-panel-conditional" data-display-if="!output.__reactivedoc__" data-ns-prefix="" style="display: none;">
+      <div id="rmd_loader_wrapper">
+        <div id="rmd_loader" style="">
+          <p>Please wait...</p>
+          <img src="./ML Modelling for US Weather Prediction_files/rmd_loader.gif">
+        </div>
+      </div>
+    </div>
+    <div id="__reactivedoc__" class="shiny-html-output shiny-bound-output" aria-live="polite">
+
+
+
+
+
+
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="section-header">
+
+
+
+<h1 class="title toc-ignore">ML Modelling for US Weather Prediction</h1>
+<h4 class="author">Kendrick Moreno</h4>
+<h4 class="date">2024-06-26</h4>
+
+</div>
+
+
+<div id="section-the-problem" class="section level1">
+<h1>The Problem</h1>
+<p>The company is considering the weather condition to help predict the
+possibility of precipitations, which involves using various local
+climatological variables, including temperature, wind speed, humidity,
+dew point, and pressure. The data you will be handling was collected by
+a NOAA weather station located at the John F. Kennedy International
+Airport in Queens, New York.</p>
+<p>My task is to provide a high level analysis of weather data in JFK
+Airport. My stakeholders want to understand the current and historical
+record of precipitations based on different variables. For now they are
+mainly interested in a macro-view of JFK Airport Weather, and how it
+relates to the possibility to rain because it will affect flight delays
+and etc.</p>
+<p>I performed the prescribed data analysis methodologies to analyze the
+data and to provide resolution to the problem which is indicated
+below:</p>
+<ul>
+<li><p>Data Wrangling</p></li>
+<li><p>Explanatory Data Analysis</p></li>
+<li><p>Prediction Model Development</p></li>
+<li><p>Prediction Model Evaluation</p></li>
+</ul>
+<div id="section-data-wrangling" class="section level2">
+<h2>Data Wrangling</h2>
+<p>For this section, we are going to do the following steps to make the
+data ready for analysis</p>
+<ol style="list-style-type: decimal">
+<li>Download NOAA Weather Dataset</li>
+<li>Extract and Read into Project</li>
+<li>Select Subset of Columns</li>
+<li>Clean Up Columns</li>
+<li>Convert Columns to Numerical Types</li>
+<li>Rename Columns</li>
+</ol>
+<div id="section-download-noaa-weather-dataset" class="section level3">
+<h3>1. Download NOAA Weather Dataset</h3>
+<p>Now lets retrieve first the raw data from the IBM Data Asset Exchange
+Site.</p>
+</div>
+<div id="section-extract-and-read-into-project" class="section level3">
+<h3>2. Extract and Read into Project</h3>
+<p>Then lets check the column types of the fields on the given data
+set.</p>
+<p><strong>Table 1:</strong> List of values of the JFK Weather
+Sample</p>
+<pre><code class="hljs">## Rows: 5,727
+## Columns: 9
+## $ DATE                   &lt;dttm&gt; 2015-07-25 13:51:00, 2016-11-18 23:51:00, 2013…
+## $ HOURLYDewPointTempF    &lt;dbl&gt; 60, 34, 33, 18, 27, 35, 4, 14, 51, 71, 76, 19, …
+## $ HOURLYRelativeHumidity &lt;dbl&gt; 46, 48, 89, 48, 61, 79, 51, 65, 90, 94, 79, 37,…
+## $ HOURLYDRYBULBTEMPF     &lt;dbl&gt; 83, 53, 36, 36, 39, 41, 19, 24, 54, 73, 83, 44,…
+## $ HOURLYWETBULBTEMPF     &lt;dbl&gt; 68, 44, 35, 30, 34, 38, 15, 21, 52, 72, 78, 35,…
+## $ HOURLYPrecip           &lt;chr&gt; "0.00", "0.00", "0.00", "0.00", "T", "0.00", "0…
+## $ HOURLYWindSpeed        &lt;dbl&gt; 13, 6, 13, 14, 11, 6, 0, 11, 11, 5, 21, 7, 17, …
+## $ HOURLYSeaLevelPressure &lt;dbl&gt; 30.01, 30.05, 30.14, 29.82, NA, 29.94, 30.42, 3…
+## $ HOURLYStationPressure  &lt;dbl&gt; 29.99, 30.03, 30.12, 29.80, 30.50, 29.92, 30.40…</code></pre>
+<p>Then lets take a peer of some of the records from the dataset.</p>
+<p><strong>Table 2:</strong> Sample records of the JFK Weather
+Sample</p>
+<pre><code class="hljs">## # A tibble: 6 × 9
+##   DATE                HOURLYDewPointTempF HOURLYRelativeHumidity
+##   &lt;dttm&gt;                            &lt;dbl&gt;                  &lt;dbl&gt;
+## 1 2015-07-25 13:51:00                  60                     46
+## 2 2016-11-18 23:51:00                  34                     48
+## 3 2013-01-06 08:51:00                  33                     89
+## 4 2011-01-27 16:51:00                  18                     48
+## 5 2015-01-03 12:16:00                  27                     61
+## 6 2013-02-15 20:51:00                  35                     79
+## # ℹ 6 more variables: HOURLYDRYBULBTEMPF &lt;dbl&gt;, HOURLYWETBULBTEMPF &lt;dbl&gt;,
+## #   HOURLYPrecip &lt;chr&gt;, HOURLYWindSpeed &lt;dbl&gt;, HOURLYSeaLevelPressure &lt;dbl&gt;,
+## #   HOURLYStationPressure &lt;dbl&gt;</code></pre>
+</div>
+<div id="section-select-subset-of-columns" class="section level3">
+<h3>3. Select Subset of Columns</h3>
+<p>The end goal of this project will be to predict HOURLYprecip
+(precipitation) using a few other variables. Before you can do this, you
+first need to preprocess the dataset. Section 3 to section 6 focuses on
+preprocessing.</p>
+<p>The first step in preprocessing is to select a subset of data columns
+and inspect the column types.</p>
+<p>The key columns that we will explore in this project are:</p>
+<ul>
+<li><p>HOURLYRelativeHumidity</p></li>
+<li><p>HOURLYDRYBULBTEMPF</p></li>
+<li><p>HOURLYPrecip</p></li>
+<li><p>HOURLYWindSpeed</p></li>
+<li><p>HOURLYStationPressure</p></li>
+</ul>
+<p>Data Glossary:</p>
+<ul>
+<li><p>‘HOURLYRelativeHumidity’ is the relative humidity given to the
+nearest whole percentage.</p></li>
+<li><p>‘HOURLYDRYBULBTEMPF’ is the dry-bulb temperature and is commonly
+used as the standard air temperature reported. It is given here in whole
+degrees Fahrenheit.</p></li>
+<li><p>‘HOURLYPrecip’ is the amount of precipitation in inches to
+hundredths over the past hour. For certain automated stations,
+precipitation will be reported at sub-hourly intervals (e.g.&nbsp;every 15 or
+20 minutes) as an accumulated amount of all precipitation within the
+preceding hour. A “T” indicates a trace amount of
+precipitation.</p></li>
+<li><p>‘HOURLYWindSpeed’ is the speed of the wind at the time of
+observation given in miles per hour (mph).</p></li>
+<li><p>‘HOURLYStationPressure’ is the atmospheric pressure observed at
+the station during the time of observation. Given in inches of Mercury
+(in Hg).</p></li>
+</ul>
+<p><strong>Table 3:</strong> New subset of the JFK Weather Sample</p>
+<pre><code class="hljs">## # A tibble: 6 × 5
+##   HOURLYRelativeHumidity HOURLYDRYBULBTEMPF HOURLYPrecip HOURLYWindSpeed
+##                    &lt;dbl&gt;              &lt;dbl&gt; &lt;chr&gt;                  &lt;dbl&gt;
+## 1                     46                 83 0.00                      13
+## 2                     48                 53 0.00                       6
+## 3                     89                 36 0.00                      13
+## 4                     48                 36 0.00                      14
+## 5                     61                 39 T                         11
+## 6                     79                 41 0.00                       6
+## # ℹ 1 more variable: HOURLYStationPressure &lt;dbl&gt;</code></pre>
+</div>
+<div id="section-clean-up-columns" class="section level3">
+<h3>4. Clean Up Columns</h3>
+<p>From the dataframe preview above, we can see that the column
+HOURLYPrecip - which is the hourly measure of precipitation levels -
+contains both NA and T values. T specifies trace amounts of
+precipitation (meaning essentially no precipitation), while NA means not
+available, and is used to denote missing values. Additionally, some
+values also have “s” at the end of them, indicating that the
+precipitation was snow.</p>
+<p>Inspect the unique values present in the column HOURLYPrecip (with
+unique(dataframe$column)) to see these values.</p>
+<p><strong>Table 4:</strong> Unique values of HOURLYPrecip field before
+changes</p>
+<pre><code class="hljs">##  [1] "0.00"  "T"     "0.06"  NA      "0.03"  "0.02"  "0.08"  "0.01"  "0.07" 
+## [10] "0.16"  "0.09"  "0.22"  "0.02s" "0.24"  "0.18"  "0.05"  "0.04"  "0.09s"
+## [19] "0.11"  "0.14"  "0.25"  "0.10"  "0.01s" "0.58"  "0.12"  "0.13"  "0.46" 
+## [28] "1.07"  "1.19"  "0.34"  "0.20"  "0.36s" "0.42"  "0.17"  "0.27"  "0.35" 
+## [37] "0.31"  "0.33"  "0.23"  "0.26"  "0.28"  "0.75"  "0.19"  "0.36"  "0.03s"
+## [46] "0.07s" "0.54"  "0.59"  "0.21"</code></pre>
+<p>Having characters in values (like the “T” and “s” that you see in the
+unique values) will cause problems when we create a model because values
+for precipitation should be numerical. So there is a need to fix these
+values that have characters.</p>
+<p>Now, for the column <code>HOURLYPrecip</code>:</p>
+<ol style="list-style-type: decimal">
+<li><p>Replace all the <code>T</code> values with “0.0” and</p></li>
+<li><p>Remove “s” from values like “0.02s”.</p></li>
+<li><p>Replace “NA” to Zero</p></li>
+</ol>
+<p><strong>Table 5:</strong> Unique values of HOURLYPrecip field after
+changes</p>
+<pre><code class="hljs">##  [1] "0.00" "0.0"  "0.06" "0.03" "0.02" "0.08" "0.01" "0.07" "0.16" "0.09"
+## [11] "0.22" "0.24" "0.18" "0.05" "0.04" "0.11" "0.14" "0.25" "0.10" "0.58"
+## [21] "0.12" "0.13" "0.46" "1.07" "1.19" "0.34" "0.20" "0.36" "0.42" "0.17"
+## [31] "0.27" "0.35" "0.31" "0.33" "0.23" "0.26" "0.28" "0.75" "0.19" "0.54"
+## [41] "0.59" "0.21"</code></pre>
+</div>
+<div id="section-convert-columns-to-numerical-types" class="section level3">
+<h3>5. Convert Columns to Numerical Types</h3>
+<p>Now that we have removed the characters in the HOURLYPrecip column,
+we can safely convert the column to a numeric type.</p>
+<p>First, check the types of the columns. We will notice that all are
+dbl (double or numeric) except for HOURLYPrecip, which is chr (character
+or string). Lets convert HOURLYPrecip to the numeric type and store the
+cleaned dataframe as a new variable.</p>
+<p><strong>Table 6:</strong> List of values of the JFK Weather Sample
+after updates</p>
+<pre><code class="hljs">## Rows: 5,727
+## Columns: 9
+## $ DATE                   &lt;dttm&gt; 2015-07-25 13:51:00, 2016-11-18 23:51:00, 2013…
+## $ HOURLYDewPointTempF    &lt;dbl&gt; 60, 34, 33, 18, 27, 35, 4, 14, 51, 71, 76, 19, …
+## $ HOURLYRelativeHumidity &lt;dbl&gt; 46, 48, 89, 48, 61, 79, 51, 65, 90, 94, 79, 37,…
+## $ HOURLYDRYBULBTEMPF     &lt;dbl&gt; 83, 53, 36, 36, 39, 41, 19, 24, 54, 73, 83, 44,…
+## $ HOURLYWETBULBTEMPF     &lt;dbl&gt; 68, 44, 35, 30, 34, 38, 15, 21, 52, 72, 78, 35,…
+## $ HOURLYPrecip           &lt;dbl&gt; 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,…
+## $ HOURLYWindSpeed        &lt;dbl&gt; 13, 6, 13, 14, 11, 6, 0, 11, 11, 5, 21, 7, 17, …
+## $ HOURLYSeaLevelPressure &lt;dbl&gt; 30.01, 30.05, 30.14, 29.82, NA, 29.94, 30.42, 3…
+## $ HOURLYStationPressure  &lt;dbl&gt; 29.99, 30.03, 30.12, 29.80, 30.50, 29.92, 30.40…</code></pre>
+</div>
+<div id="section-rename-columns" class="section level3">
+<h3>6. Rename Columns</h3>
+<p>Let’s rename the following columns as:</p>
+<p>‘HOURLYRelativeHumidity’ to ‘relative_humidity’ ‘HOURLYDRYBULBTEMPF’
+to ‘dry_bulb_temp_f’ ‘HOURLYPrecip’ to ‘precip’ ‘HOURLYWindSpeed’ to
+‘wind_speed’ ‘HOURLYStationPressure’ to ‘station_pressure’</p>
+<p><strong>Table 7:</strong> Dataset after Data Wrangling</p>
+<pre><code class="hljs">## Rows: 4,975
+## Columns: 9
+## $ DATE                   &lt;dttm&gt; 2015-07-25 13:51:00, 2016-11-18 23:51:00, 2013…
+## $ HOURLYDewPointTempF    &lt;dbl&gt; 60, 34, 33, 18, 35, 4, 14, 51, 71, 19, 48, 56, …
+## $ relative_humidity      &lt;dbl&gt; 46, 48, 89, 48, 79, 51, 65, 90, 94, 37, 72, 47,…
+## $ dry_bulb_temp_f        &lt;dbl&gt; 83, 53, 36, 36, 41, 19, 24, 54, 73, 44, 57, 78,…
+## $ HOURLYWETBULBTEMPF     &lt;dbl&gt; 68, 44, 35, 30, 38, 15, 21, 52, 72, 35, 52, 65,…
+## $ precip                 &lt;dbl&gt; 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.06,…
+## $ wind_speed             &lt;dbl&gt; 13, 6, 13, 14, 6, 0, 11, 11, 5, 7, 17, 8, 3, 11…
+## $ HOURLYSeaLevelPressure &lt;dbl&gt; 30.01, 30.05, 30.14, 29.82, 29.94, 30.42, 30.37…
+## $ station_pressure       &lt;dbl&gt; 29.99, 30.03, 30.12, 29.80, 29.92, 30.40, 30.35…</code></pre>
+</div>
+</div>
+<div id="section-explanatory-data-analysis" class="section level2">
+<h2>Explanatory Data Analysis</h2>
+<p>For this section, we are going to do the following steps to make the
+data ready for analysis</p>
+<p>For this section, we are going to do the following steps to analyze
+the data before performing data modelling.</p>
+<ol style="list-style-type: decimal">
+<li>Training and Testing Data</li>
+<li>Analyzing Individual Feature Patterns using Visualization</li>
+<li>Descriptive Statistical Analysis</li>
+<li>Basics of Grouping</li>
+<li>Correlation and Causation</li>
+</ol>
+<div id="section-training-and-testing-data" class="section level3">
+<h3>1. Training and Testing Data</h3>
+<p>An important step in testing your model is to split the data into
+training and testing data. The training data will be used to train (fit)
+models, while the testing data will not be touched until we are
+evaluating the model. The airline dataset is now divided into 25:75.
+This means that the proportion of data that is split into the training
+data is 75% (so the testing data is 25%).</p>
+</div>
+<div id="section-analyzing-individual-feature-patterns-using-visualization" class="section level3">
+<h3>2. Analyzing Individual Feature Patterns using Visualization</h3>
+<p>To analyze the data, lets prepare a boxplot to visualize numeric (or
+quantitative) data, since you can visualize the various distributions of
+the data.</p>
+<p><strong>Table 8:</strong> Detailed information about the</p>
+<table class="table table-condensed">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">train_data</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">3731</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">9</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">numeric</td>
+<td align="left">8</td>
+</tr>
+<tr class="odd">
+<td align="left">POSIXct</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-condensed">
+<colgroup>
+<col width="23%">
+<col width="10%">
+<col width="14%">
+<col width="6%">
+<col width="6%">
+<col width="7%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="7%">
+<col width="6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">HOURLYDewPointTempF</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">42.50</td>
+<td align="right">19.38</td>
+<td align="right">-12.00</td>
+<td align="right">27.50</td>
+<td align="right">45.00</td>
+<td align="right">58.00</td>
+<td align="right">78.00</td>
+<td align="left">▁▅▆▇▆</td>
+</tr>
+<tr class="even">
+<td align="left">relative_humidity</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">64.47</td>
+<td align="right">19.61</td>
+<td align="right">14.00</td>
+<td align="right">49.00</td>
+<td align="right">65.00</td>
+<td align="right">81.00</td>
+<td align="right">100.00</td>
+<td align="left">▁▆▇▇▇</td>
+</tr>
+<tr class="odd">
+<td align="left">dry_bulb_temp_f</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">55.54</td>
+<td align="right">17.32</td>
+<td align="right">7.00</td>
+<td align="right">42.00</td>
+<td align="right">56.00</td>
+<td align="right">70.00</td>
+<td align="right">99.00</td>
+<td align="left">▁▆▇▇▂</td>
+</tr>
+<tr class="even">
+<td align="left">HOURLYWETBULBTEMPF</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">49.43</td>
+<td align="right">16.06</td>
+<td align="right">5.00</td>
+<td align="right">37.00</td>
+<td align="right">50.00</td>
+<td align="right">63.00</td>
+<td align="right">81.00</td>
+<td align="left">▁▅▇▇▆</td>
+</tr>
+<tr class="odd">
+<td align="left">precip</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.00</td>
+<td align="right">0.03</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">1.19</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">wind_speed</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">11.24</td>
+<td align="right">6.17</td>
+<td align="right">0.00</td>
+<td align="right">7.00</td>
+<td align="right">10.00</td>
+<td align="right">15.00</td>
+<td align="right">52.00</td>
+<td align="left">▇▆▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">HOURLYSeaLevelPressure</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">30.03</td>
+<td align="right">0.23</td>
+<td align="right">28.71</td>
+<td align="right">29.88</td>
+<td align="right">30.02</td>
+<td align="right">30.17</td>
+<td align="right">30.85</td>
+<td align="left">▁▁▇▇▁</td>
+</tr>
+<tr class="even">
+<td align="left">station_pressure</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">30.00</td>
+<td align="right">0.23</td>
+<td align="right">28.69</td>
+<td align="right">29.86</td>
+<td align="right">30.00</td>
+<td align="right">30.15</td>
+<td align="right">30.82</td>
+<td align="left">▁▁▆▇▁</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: POSIXct</strong></p>
+<table class="table table-condensed">
+<colgroup>
+<col width="13%">
+<col width="9%">
+<col width="13%">
+<col width="18%">
+<col width="18%">
+<col width="18%">
+<col width="8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="left">min</th>
+<th align="left">max</th>
+<th align="left">median</th>
+<th align="right">n_unique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">DATE</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">2010-01-02 03:51:00</td>
+<td align="left">2018-07-26 10:51:00</td>
+<td align="left">2014-04-10 16:51:00</td>
+<td align="right">3731</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Image 1:</strong> Box plot illustration for distribution of
+data</p>
+<p><img src="./ML Modelling for US Weather Prediction_files/2.b  Analyzing Individual Feature Patterns using Visualization-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>The above plot tells the distribution of each variable per date. In
+order for us to build a model, we have to check the relationship of the
+variables we are going to use.</p>
+<p><strong>Image 2:</strong> Series of Scatter Plots visualizing
+correlation between precip and other variables
+<img src="./ML Modelling for US Weather Prediction_files/2.c  Analyzing Individual Feature Patterns using Visualization-1.png" width="672" style="display: block; margin: auto;"></p>
+<pre><code class="hljs">## Correlation between precip and relative_humidity : 0.1532683</code></pre>
+<p><img src="./ML Modelling for US Weather Prediction_files/2.c  Analyzing Individual Feature Patterns using Visualization-2.png" width="672" style="display: block; margin: auto;"></p>
+<pre><code class="hljs">## Correlation between precip and dry_bulb_temp_f : 0.01097055</code></pre>
+<p><img src="./ML Modelling for US Weather Prediction_files/2.c  Analyzing Individual Feature Patterns using Visualization-3.png" width="672" style="display: block; margin: auto;"></p>
+<pre><code class="hljs">## Correlation between precip and wind_speed : 0.05600031</code></pre>
+<p><img src="./ML Modelling for US Weather Prediction_files/2.c  Analyzing Individual Feature Patterns using Visualization-4.png" width="672" style="display: block; margin: auto;"></p>
+<pre><code class="hljs">## Correlation between precip and station_pressure : -0.09080706</code></pre>
+</div>
+<div id="section-descriptive-statistical-analysis" class="section level3">
+<h3>3. Descriptive Statistical Analysis</h3>
+<p>Here is the descriptive statistical analysis which helps to describe
+basic features of our dataset and generates a short summary about the
+sample and measures of the weather data.</p>
+<p><strong>Table 9:</strong> tatistical data summary of the Weather
+data</p>
+<pre><code class="hljs">##                   mean_relative_humidity std_dev_relative_humidity
+## relative_humidity                64.4728                  19.61211
+## dry_bulb_temp_f                  64.4728                  19.61211
+## wind_speed                       64.4728                  19.61211
+## station_pressure                 64.4728                  19.61211
+##                   min_relative_humidity median_relative_humidity
+## relative_humidity                    14                       65
+## dry_bulb_temp_f                      14                       65
+## wind_speed                           14                       65
+## station_pressure                     14                       65
+##                   max_relative_humidity mean_precip std_dev_precip min_precip
+## relative_humidity                   100    55.53927       17.32366          7
+## dry_bulb_temp_f                     100    55.53927       17.32366          7
+## wind_speed                          100    55.53927       17.32366          7
+## station_pressure                    100    55.53927       17.32366          7
+##                   median_precip max_dry_bulb_temp_f mean_wind_speed
+## relative_humidity            56                  99        11.23801
+## dry_bulb_temp_f              56                  99        11.23801
+## wind_speed                   56                  99        11.23801
+## station_pressure             56                  99        11.23801
+##                   std_dev_wind_speed min_wind_speed median_wind_speed
+## relative_humidity           6.165559              0                10
+## dry_bulb_temp_f             6.165559              0                10
+## wind_speed                  6.165559              0                10
+## station_pressure            6.165559              0                10
+##                   max_wind_speed mean_station_pressure std_dev_station_pressure
+## relative_humidity             52              30.00437                0.2338709
+## dry_bulb_temp_f               52              30.00437                0.2338709
+## wind_speed                    52              30.00437                0.2338709
+## station_pressure              52              30.00437                0.2338709
+##                   min_station_pressure median_station_pressure
+## relative_humidity                28.69                      30
+## dry_bulb_temp_f                  28.69                      30
+## wind_speed                       28.69                      30
+## station_pressure                 28.69                      30
+##                   max_station_pressure precip_correlation
+## relative_humidity                30.82         0.15326828
+## dry_bulb_temp_f                  30.82         0.01097055
+## wind_speed                       30.82         0.05600031
+## station_pressure                 30.82        -0.09080706</code></pre>
+</div>
+<div id="section-basics-of-grouping" class="section level3">
+<h3>4. Basics of Grouping</h3>
+<p>Is there any relationship between the date and precip variable? For
+this section, lets prepare a heatmap to further illustrate the
+relationship of the years and precip.</p>
+<p><strong>Image 3:</strong> Heatmap for precip
+<img src="./ML Modelling for US Weather Prediction_files/4. Basics of Grouping-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>Given the data, there are years that have higher mean of precip
+value.</p>
+</div>
+<div id="section-correlation" class="section level3">
+<h3>5. Correlation</h3>
+<p>Correlation is a measure of the extent of interdependence between
+variables.</p>
+<p><strong>Image 4:</strong> Correlation Map of all related fields to
+precip
+<img src="./ML Modelling for US Weather Prediction_files/5. Correlation-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div id="section-conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>Based on the procedures I performed, the variables that are important
+to take into account when predicting the precipitation (<em>precip</em>)
+are the following:</p>
+<p>Continuous numerical variables: <em>relative_humidity,
+dry_bulb_temp_f</em></p>
+</div>
+</div>
+<div id="section-prediction-model-development" class="section level2">
+<h2>Prediction Model Development</h2>
+<p>For this situation, we are going to use KNN Machine Learning Model.
+The k-Nearest Neighbors (k-NN) algorithm is a simple, yet powerful
+machine learning model commonly used for both classification and
+regression tasks.</p>
+<p><strong>Table 10:</strong> KNN Model result specification</p>
+<pre><code class="hljs">##              Length Class            Mode
+## lvl           0     -none-           NULL
+## spec          7     nearest_neighbor list
+## fit          10     train.kknn       list
+## preproc       1     -none-           list
+## elapsed       1     -none-           list
+## censor_probs  0     -none-           list</code></pre>
+<p><strong>Image 5:</strong> KNN specification plot
+<img src="./ML Modelling for US Weather Prediction_files/1.b Predictive Model-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div id="section-prediction-model-evaluation" class="section level2">
+<h2>Prediction Model Evaluation</h2>
+<p>Regularization is a way to handle the problem of overfitting. It is a
+technique you can use to reduce the complexity of the model by adding a
+penalty on the different parameters of the model. But Regularization
+doesn’t fit kNN model so I used weighted k-NN model or implementing a
+custom regularization approach.</p>
+<p><strong>Table 11:</strong> Weighted KNN Model result
+specification</p>
+<pre><code class="hljs">## # A tibble: 3 × 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 rmse    standard     0.0391 
+## 2 rsq     standard     0.00233
+## 3 mae     standard     0.00769</code></pre>
+<p><strong>Image 6:</strong> weighted KNN specification plot
+<img src="./ML Modelling for US Weather Prediction_files/1.b Predictive Model Evaluation-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div id="section-prediction" class="section level2">
+<h2>Prediction</h2>
+<p>With the given model, it predicts the amount of precipitation based
+on the dry bulb temperature and relative humidity value.</p>
+<p><strong>Image 6:</strong> Scatterplot showing predicted value of
+precipitation
+<img src="./ML Modelling for US Weather Prediction_files/1.a Prediction-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+</div>
+  </div>
+
+
+</body></html>
